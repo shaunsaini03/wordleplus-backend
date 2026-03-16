@@ -20,6 +20,7 @@ public class Game {
 
     private int maxGuesses;
 
+
     @Column(unique = true)
     private LocalDate gameDate;
 }
