@@ -6,5 +6,7 @@ import lombok.Setter;
 @Setter
 public class DailyLeaderboardEntry {
     private String username;
-    private int numGuesses;
+    private Integer numGuesses; // nullable
+    private boolean won;
+    private Integer maxGuesses;
 }

@@ -177,13 +177,19 @@ public class GameService {
     public List<DailyLeaderboardEntry> getDailyLeaderboard() {
 
         LocalDate today = LocalDate.now(ZoneId.of("America/Los_Angeles"));
+        Game game = gameRepository.findByGameDate(LocalDate.now(ZoneId.of("America/Los_Angeles")))
+                .orElseThrow(() -> new RuntimeException("Game not created"));
 
         List<Object[]> rows = sessionRepository.dailyLeaderboard(today);
 
         return rows.stream().map(r -> {
             DailyLeaderboardEntry e = new DailyLeaderboardEntry();
             e.setUsername((String) r[0]);
-            e.setNumGuesses(((Number) r[1]).intValue());
+
+            e.setNumGuesses(r[1] != null ? ((Number) r[1]).intValue() : null);
+            e.setWon((Boolean) r[2]);
+            e.setMaxGuesses(game.getMaxGuesses());
+
             return e;
         }).toList();
     }

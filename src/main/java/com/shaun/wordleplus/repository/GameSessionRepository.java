@@ -15,24 +15,35 @@ public interface GameSessionRepository extends JpaRepository<GameSession, Long> 
 
 
     @Query("""
-        SELECT s.user.username, COUNT(s)
-        FROM GameSession s
-        WHERE s.won = true
-        GROUP BY s.user.username
-        ORDER BY COUNT(s) DESC
-        """)
+    SELECT u.username, COUNT(s)
+    FROM User u
+    LEFT JOIN GameSession s ON s.user = u AND s.won = true
+    GROUP BY u.username
+    ORDER BY COUNT(s) DESC
+""")
     List<Object[]> globalLeaderboard();
 
     @Query("""
-        SELECT s.user.username, MIN(g.guessNumber)
-        FROM GameSession s
-        JOIN Guess g ON g.session = s
-        WHERE s.won = true
-        AND s.game.gameDate = :date
-        AND g.guessWord = s.game.word
-        GROUP BY s.user.username
-        ORDER BY MIN(g.guessNumber) ASC
-        """)
+SELECT u.username,
+       COUNT(g),
+       CASE 
+           WHEN COUNT(CASE WHEN g.guessWord = s.game.word THEN 1 END) > 0 
+           THEN true 
+           ELSE false 
+       END
+FROM User u
+LEFT JOIN GameSession s 
+    ON s.user = u AND s.game.gameDate = :date
+LEFT JOIN Guess g 
+    ON g.session = s
+GROUP BY u.username
+ORDER BY 
+    CASE 
+        WHEN COUNT(CASE WHEN g.guessWord = s.game.word THEN 1 END) > 0 
+        THEN 0 ELSE 1 
+    END,
+    COUNT(g)
+""")
     List<Object[]> dailyLeaderboard(LocalDate date);
 
 }
