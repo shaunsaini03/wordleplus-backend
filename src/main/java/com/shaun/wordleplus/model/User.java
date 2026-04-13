@@ -17,6 +17,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private String passwordHash;
+
     private int highScore;
 
     private int numWins;

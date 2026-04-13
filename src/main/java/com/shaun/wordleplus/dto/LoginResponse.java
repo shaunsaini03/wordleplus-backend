@@ -11,5 +11,6 @@ public class LoginResponse {
     private String username;
     private int numWins;
     private int highScore;
+    private String token;
 
 }

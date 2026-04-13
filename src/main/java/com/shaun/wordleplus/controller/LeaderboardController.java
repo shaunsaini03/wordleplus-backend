@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/leaderboard")
-@CrossOrigin
 public class LeaderboardController {
 
     private final GameService gameService;

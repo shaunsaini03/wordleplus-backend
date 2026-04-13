@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/guess")
-@CrossOrigin
 public class GuessController {
 
     private final GameService gameService;

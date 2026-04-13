@@ -27,16 +27,19 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GameSessionRepository sessionRepository;
     private final GuessRepository guessRepository;
+    private final WordValidationService wordValidationService;
 
     public GameService(UserRepository userRepository,
                        GameRepository gameRepository,
                        GameSessionRepository sessionRepository,
-                       GuessRepository guessRepository) {
+                       GuessRepository guessRepository,
+                       WordValidationService wordValidationService) {
 
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.sessionRepository = sessionRepository;
         this.guessRepository = guessRepository;
+        this.wordValidationService = wordValidationService;
     }
 
     public SessionResponse getTodaySession(String username) {
@@ -133,6 +136,14 @@ public class GameService {
         String answer = game.getWord();
 
         String guessWord = request.getGuessWord().toLowerCase();
+
+        if (guessWord.length() != answer.length()) {
+            throw new RuntimeException("Guess must be " + answer.length() + " letters");
+        }
+
+        if (!wordValidationService.isValidWord(guessWord)) {
+            throw new RuntimeException("Not a valid word");
+        }
 
         int guessNumber =
                 guessRepository.findBySessionIdOrderByGuessNumber(session.getId()).size() + 1;

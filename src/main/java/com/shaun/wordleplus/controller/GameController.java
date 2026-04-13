@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/session")
-@CrossOrigin
 public class GameController {
 
     private final GameService gameService;
